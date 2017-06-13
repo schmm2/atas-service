@@ -1,0 +1,34 @@
+{
+  "name": "atas-service",
+  "version": "1.0.0",
+  "description": "Atas Backend Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "mongod & nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schmm2/atas-service.git"
+  },
+  "author": "M. Schmidli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/schmm2/atas-service/issues"
+  },
+  "homepage": "https://github.com/schmm2/atas-service#readme",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongoose": "^4.9.6",
+    "mqtt": "^2.7.1",
+    "mqtt-regex": "^1.0.5",
+    "point-in-polygon": "^1.0.1"
+  }
+}
