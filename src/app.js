@@ -1,4 +1,4 @@
-import express from 'express'
+var express = require('express');
 var DangerzoneHandler = require('./classes/DangerzoneHandler.js');
 export const app = express();
 
