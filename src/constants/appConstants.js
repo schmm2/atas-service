@@ -6,4 +6,5 @@ export const appConstants = {
     MQTT_BROKER_USER : 'rpyifhax',
     MQTT_BROKER_PASSWORD : 'SNr0uCxBVOK4',
     MQTT_TOPIC_TRACKER : 'atas/devices/',
+    MONGODB_URL : 'mongodb://127.0.0.1/atasdb',
 }
