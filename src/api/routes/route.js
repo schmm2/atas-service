@@ -12,6 +12,12 @@ module.exports = function(app) {
         .put(atas.updateDangerzone)
         .delete(atas.deleteDangerzone);
 
+    app.route('/nodes')
+        .get(atas.listNodes);
+
+    app.route('/nodes/:nodeId')
+        .get(atas.getNode);
+
     app.use(function(req, res) {
         res.status(404).send({url: req.originalUrl + ' not found'})
     });

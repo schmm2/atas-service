@@ -1,8 +1,26 @@
 'use strict';
-
 var mongoose = require('mongoose'),
-Dangerzone = mongoose.model('Dangerzone');
+Dangerzone = mongoose.model('Dangerzone'),
+Node = mongoose.model('Node');
 
+// Nodes
+exports.listNodes = function(req, res) {
+    Node.find({}, function(err, node) {
+        if (err)
+            res.send(err);
+        res.json(node);
+    });
+};
+
+exports.getNode = function(req, res) {
+    Node.findById(req.params.nodeId, function(err, node) {
+        if (err)
+            res.send(err);
+        res.json(node);
+    });
+};
+
+// Dangerzone
 exports.listDangerzones = function(req, res) {
     Dangerzone.find({}, function(err, dangerzone) {
         if (err)

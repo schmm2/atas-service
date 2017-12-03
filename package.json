@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p --config webpack.config.js",
-    "start": "node build/app.js"
+    "start": "node build/app.js",
+    "startdb": "sudo mongod"
   },
   "repository": {
     "type": "git",
