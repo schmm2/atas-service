@@ -12,11 +12,13 @@ exports.listNodes = function(req, res) {
     });
 };
 
+// get node + all node data entries
 exports.getNode = function(req, res) {
-    Node.findById(req.params.nodeId, function(err, node) {
-        if (err)
-            res.send(err);
-        res.json(node);
+    Node.findById(req.params.nodeId).
+        populate('data').
+        exec(function(err, node){
+            if (err) res.send(err);
+            res.json(node);
     });
 };
 

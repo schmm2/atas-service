@@ -6,6 +6,8 @@ module.exports = class DangerzoneHandler {
 
     constructor(mongoose, mqttTrackerObserver){
         this.mongoose = mongoose;
+        this.Dangerzone = this.mongoose.model('Dangerzone');
+
         this.mqttTrackerObserver = mqttTrackerObserver;
 
         // keep track of nodes inside dangerzone
@@ -21,12 +23,10 @@ module.exports = class DangerzoneHandler {
         var elementIndex = this.trackersInsideDangerzoneList.indexOf(trackerId);
         var self = this;
 
-        console.log("New Message, GPS-Data: "+ JSON.stringify(gpsObject));
+        if(appConstants.LOGGING){console.log("New Message, GPS-Data: "+ JSON.stringify(gpsObject))}
 
         // find all dangerzones
-        var Dangerzone = this.mongoose.model('Dangerzone');
-
-        Dangerzone.find()
+        this.Dangerzone.find()
             .exec(function (err, listOfDangerzones) {
                 var insideDangerzone = false;
 

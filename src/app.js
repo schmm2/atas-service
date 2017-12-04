@@ -3,12 +3,29 @@ console.log("start atas-service");
 // INCLUDES + SETUP
 var express = require('express');
 var DangerzoneHandler = require('./classes/DangerzoneHandler.js');
+var dataHandler = require('./classes/DataHandler.js');
+
 import { appConstants } from './constants/appConstants.js'
 const PORT = process.env.PORT || 8000;
 const mqtt = require('mqtt')
 import mqtt_regex from 'mqtt-regex';
 
 export const app = express();
+
+// mqtt connection settings
+var mqttOptions = {
+    port: appConstants.MQTT_BROKER_PORT,
+    host: appConstants.MQTT_BROKER_URL,
+    clientId: appConstants.NAME + Math.random().toString(16).substr(2, 8),
+    username: appConstants.MQTT_BROKER_USER,
+    password: appConstants.MQTT_BROKER_PASSWORD,
+    keepalive: 60,
+    reconnectPeriod: 2000,
+    protocolId: 'MQIsdp',
+    protocolVersion: 3,
+    clean: true,
+    encoding: 'utf8'
+};
 
 // setup db connection
 var mongoose = require('mongoose'),
@@ -41,27 +58,19 @@ var routes = require('./api/routes/route');
 routes(app);
 
 // MQTT
-var mqttOptions = {
-    port: appConstants.MQTT_BROKER_PORT,
-    host: appConstants.MQTT_BROKER_URL,
-    clientId: appConstants.NAME + Math.random().toString(16).substr(2, 8),
-    username: appConstants.MQTT_BROKER_USER,
-    password: appConstants.MQTT_BROKER_PASSWORD,
-    keepalive: 60,
-    reconnectPeriod: 2000,
-    protocolId: 'MQIsdp',
-    protocolVersion: 3,
-    clean: true,
-    encoding: 'utf8'
-};
 var mqttTrackerObserver = mqtt.connect(appConstants.MQTT_BROKER_URL, mqttOptions);
 var dangerzonehandler = new DangerzoneHandler(mongoose, mqttTrackerObserver);
+var datahandler = new dataHandler(mongoose);
 
 mqttTrackerObserver.on('connect', function () {
-    console.log(appConstants.NAME + " - Mqtt connected");
+    console.log("Mqtt connected");
     // subscribe
     mqttTrackerObserver.subscribe(appConstants.MQTT_TOPIC_TRACKER + "+/up/gps");
-    mqttTrackerObserver.subscribe(appConstants.MQTT_TOPIC_TRACKER + "+/up/buttonpressed");
+    mqttTrackerObserver.subscribe(appConstants.MQTT_TOPIC_TRACKER + "+/up");
+})
+
+mqttTrackerObserver.on('error', function () {
+    console.log("Mqtt error");
 })
 
 mqttTrackerObserver.on('message', function(topic, payload, packet) {
@@ -70,13 +79,16 @@ mqttTrackerObserver.on('message', function(topic, payload, packet) {
     // get tracker id from topic parameter
     var trackerId = message_info(topic).id;
 
-    if(appConstants.LOGGING){console.log("Tracker: "+ trackerId)}
     if(appConstants.LOGGING){console.log("New Message arrived, topic:" + topic)}
+    if(appConstants.LOGGING){console.log("Node ID: "+ trackerId)}
 
     // switch throug topics
     switch(topic) {
         case (appConstants.MQTT_TOPIC_TRACKER + trackerId + "/up/gps"):
             dangerzonehandler.checkIfInDangerzone(trackerId,payload);
+            break;
+        case (appConstants.MQTT_TOPIC_TRACKER + trackerId + "/up"):
+            datahandler.storeData(payload);
             break;
         default:
             break;

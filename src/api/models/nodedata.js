@@ -3,11 +3,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var NodeDataSchema = new Schema({
-    name: String,
     longitude: Number,
     latitude: Number,
     time: Date,
-    alarm: Boolean,
+    buttonpressed: Boolean,
     rssi: Number,
     snr: Number,
     gateway: String,
