@@ -5,29 +5,43 @@ module.exports = class DataHandler {
     constructor(mongoose){
         this.mongoose = mongoose;
         this.Node = this.mongoose.model('Node');
-        this.NodeData = this.mongoose.model('NodeData');
+        this.UplinkMessage = this.mongoose.model('UplinkMessage');
+        this.UplinkMessageGateway = this.mongoose.model('UplinkMessageGateway');
     }
 
     storeData(data){
         var data = JSON.parse(data.toString());
         var self = this;
 
-        console.log("Datahandler, Node ID: "+ data.dev_id);
-
-        var newNodeData = new self.NodeData({
+        var newUplinkMessage = new self.UplinkMessage({
             longitude: data.payload_fields.gps.lng,
             latitude: data.payload_fields.gps.lat,
+            counter: data.counter,
             buttonpressed: (data.payload_fields.buttonpressed == 'true'),
+            indangerzone: (data.payload_fields.indangerzone == 'true'),
+            data_rate: data.metadata.data_rate,
+            coding_rate: data.metadata.coding_rate,
             time: data.metadata.time,
-            snr: data.metadata.snr,
-            rssi: data.metadata.rssi,
-            gateway: data.metadata.gateway,
+            gateways: []
         });
-        newNodeData.save();
+        newUplinkMessage.save();
+
+        if(typeof data.metadata.gateways != 'undefined'){
+            for (var i = 0; i < data.metadata.gateways.length; i++) {
+                var newUplinkMessageGateway = new self.UplinkMessageGateway({
+                    snr: data.metadata.gateways[i].snr,
+                    rssi: data.metadata.gateways[i].rssi,
+                    gtw_id: data.metadata.gateways[i].gtw_id
+                });
+                newUplinkMessageGateway.save();
+                // store
+                newUplinkMessage.gateways.push(newUplinkMessageGateway);
+            }
+        }
 
         var newNode = new this.Node({
             name: data.dev_id,
-            data: [newNodeData],
+            uplinkmessages: [newUplinkMessage],
         });
 
         this.Node.findOne(
@@ -49,7 +63,7 @@ module.exports = class DataHandler {
                         });
                     } else{
                         // add node data
-                        node.data.push(newNodeData);
+                        node.uplinkmessages.push(newUplinkMessage);
                         node.save();
                     }
                 }

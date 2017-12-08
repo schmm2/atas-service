@@ -4,9 +4,9 @@ var Schema = mongoose.Schema;
 
 var NodeSchema = new Schema({
     name: String,
-    data : [{
+    uplinkmessages : [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'NodeData'
+        ref: 'UplinkMessage'
     }]
 });
 module.exports = mongoose.model('Node', NodeSchema);

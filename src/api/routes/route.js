@@ -16,7 +16,7 @@ module.exports = function(app) {
         .get(atas.listNodes);
 
     app.route('/nodes/:nodeId')
-        .get(atas.getNode);
+        .get(atas.getNodeData);
 
     app.use(function(req, res) {
         res.status(404).send({url: req.originalUrl + ' not found'})

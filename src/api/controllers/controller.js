@@ -13,12 +13,15 @@ exports.listNodes = function(req, res) {
 };
 
 // get node + all node data entries
-exports.getNode = function(req, res) {
+exports.getNodeData = function(req, res) {
     Node.findById(req.params.nodeId).
-        populate('data').
+        populate({
+        path: 'uplinkmessages',
+        populate: { path: 'gateways' }
+        }).
         exec(function(err, node){
             if (err) res.send(err);
-            res.json(node);
+            res.json(node.uplinkmessages);
     });
 };
 

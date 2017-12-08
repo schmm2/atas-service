@@ -31,7 +31,8 @@ var mqttOptions = {
 var mongoose = require('mongoose'),
   Dangerzone = require('./api/models/dangerzone'),
   Node = require('./api/models/node'),
-  NodeData = require('./api/models/nodedata'),
+  UplinkMessage = require('./api/models/uplinkmessage'),
+  UplinkMessageGateway = require('./api/models/uplinkmessage_gateway'),
   bodyParser = require('body-parser'),
   cors = require('cors');
 
